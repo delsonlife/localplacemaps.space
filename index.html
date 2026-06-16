@@ -1643,20 +1643,20 @@ function renderStars(count) {
 
 let frame = 0;
 const sequence = [
-  { stars: 0, hold: 700 },
-  { stars: 1, hold: 150 },
-  { stars: 2, hold: 150 },
-  { stars: 3, hold: 150 },
-  { stars: 4, hold: 150 },
-  { stars: 5, hold: 800, redirect: true },
-  { stars: 5, hold: 1400, redirect: true },
-  { stars: 0, hold: 600 },
-  { stars: 1, hold: 180 },
-  { stars: 2, hold: 1000, feedback: true },
-  { stars: 2, hold: 1800, feedback: true },
-  { stars: 0, hold: 600 },
-];
-
+    { stars: 0, hold: 700 },
+    { stars: 1, hold: 150 },
+    { stars: 2, hold: 150 },
+    { stars: 3, hold: 150 },     // ← 3 étoiles
+    { stars: 4, hold: 150 },
+    { stars: 5, hold: 800, redirect: true },
+    { stars: 5, hold: 1400, redirect: true },
+    { stars: 0, hold: 600 },
+    { stars: 1, hold: 180 },
+    { stars: 2, hold: 180 },
+    { stars: 3, hold: 1000, feedback: true },  // ← 3 étoiles au lieu de 2
+    { stars: 3, hold: 1800, feedback: true },  // ← 3 étoiles au lieu de 2
+    { stars: 0, hold: 600 },
+  ];
 function runSeq() {
   const s = sequence[frame];
   renderStars(s.stars);
