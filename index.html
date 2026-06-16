@@ -1045,11 +1045,18 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
       <a href="#faq">FAQ</a>
     </nav>
     <div class="header-cta">
-      <button class="btn btn-primary" id="header-btn" onclick="openModal()">Installer mon système</button>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
+  <!-- ⬇️ NOUVEAU BOUTON CONNEXION ⬇️ -->
+  <a href="https://avis.localplacemaps.space/dashboard/login" class="btn btn-outline" style="font-size: 14px; padding: 10px 20px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    Connexion
+  </a>
+  <!-- ⬆️ FIN BOUTON CONNEXION ⬆️ -->
+  
+  <button class="btn btn-primary" id="header-btn" onclick="openModal()">Installer mon système</button>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</div>
   </div>
 </header>
 
@@ -1058,6 +1065,14 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
   <a href="#demo" onclick="closeMobileMenu()">Démo</a>
   <a href="#tarifs" onclick="closeMobileMenu()">Tarifs</a>
   <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+  
+  <!-- ⬇️ NOUVEAU LIEN CONNEXION DANS MENU MOBILE ⬇️ -->
+  <a href="https://avis.localplacemaps.space/dashboard/login" onclick="closeMobileMenu()" style="display: flex; align-items: center; gap: 8px; color: var(--blue);">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    Connexion
+  </a>
+  <!-- ⬆️ FIN CONNEXION MOBILE ⬆️ -->
+  
   <button class="btn btn-primary btn-block" onclick="closeMobileMenu(); openModal()">Installer mon système d'avis</button>
 </div>
 
