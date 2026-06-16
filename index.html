@@ -1124,21 +1124,40 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 </section>
 
 <!-- ===================== STATS BAND ===================== -->
-<div class="stats-band">
+<div class="stats-band" style="border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--white);">
   <div class="wrap">
-    <div class="stats-inner">
-      <div class="stat-item">
-        <span class="stat-num">+<em>80</em>%</span>
-        <span class="stat-label">d'avis Google supplémentaires en moyenne</span>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; max-width: 780px; margin: 0 auto;">
+      
+      <!-- Item 1 : +80% -->
+      <div style="padding: 32px 24px; text-align: left; border-right: 1px solid var(--border);">
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 32px; font-weight: 700; color: var(--gold-dark); letter-spacing: -0.02em; line-height: 1.1;">
+          +<span style="color: var(--gold-dark);">80</span>%
+        </div>
+        <div style="font-size: 13px; color: var(--gray); font-weight: 500; margin-top: 4px; line-height: 1.4;">
+          Avis Google<br>supplémentaires
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-num"><em>48</em>h</span>
-        <span class="stat-label">pour être opérationnel, configuration incluse</span>
+      
+      <!-- Item 2 : 48h -->
+      <div style="padding: 32px 24px; text-align: left; border-right: 1px solid var(--border);">
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 32px; font-weight: 700; color: var(--gold-dark); letter-spacing: -0.02em; line-height: 1.1;">
+          <span style="color: var(--gold-dark);">48</span>h
+        </div>
+        <div style="font-size: 13px; color: var(--gray); font-weight: 500; margin-top: 4px; line-height: 1.4;">
+          Mise en service<br>configuration incluse
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-num"><em>0</em></span>
-        <span class="stat-label">compétence technique requise de votre côté</span>
+      
+      <!-- Item 3 : Aucune compétence -->
+      <div style="padding: 32px 24px; text-align: left;">
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: var(--gold-dark); letter-spacing: -0.02em; line-height: 1.2;">
+          <span style="color: var(--gold-dark);">✓</span> Aucune<br>compétence
+        </div>
+        <div style="font-size: 13px; color: var(--gray); font-weight: 500; margin-top: 4px; line-height: 1.4;">
+          Installation<br>entièrement accompagnée
+        </div>
       </div>
+      
     </div>
   </div>
 </div>
@@ -1157,7 +1176,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
         <h3>Les clients satisfaits oublient</h3>
-        <p>Après une bonne prestation, laisser un avis demande un effort que vos clients ne font presque jamais spontanément — même quand ils sont contents.</p>
+        <p>Après une bonne prestation, laisser un avis demande un effort que vos clients ne font presque jamais spontanément même quand ils sont contents.</p>
       </div>
       <div class="problem-card reveal">
         <div class="card-icon">
@@ -1318,35 +1337,57 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
   </div>
 </section>
 
-<!-- ===================== RESULTS ===================== -->
-<section id="resultats" style="background:var(--surface);">
+ <!-- ===================== RESULTS ===================== -->
+<section id="resultats" style="background: var(--surface); padding: 96px 0;">
   <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow section-label">Résultats observés</span>
-      <h2>Ce que le système change concrètement.</h2>
-      <p class="body-md">Des résultats mesurables, visibles dès les premières semaines d'utilisation.</p>
+    <div class="section-head reveal" style="max-width: 520px;">
+      <span class="eyebrow section-label">Les bénéfices au quotidien</span>
+      <h2 style="font-size: clamp(28px, 3.2vw, 38px);">Un impact visible sur votre réputation locale.</h2>
+      <p class="body-md" style="margin-top: 16px; color: var(--gray);">Pas de promesses marketing. Des résultats concrets, mesurables, qui transforment votre relation avec vos clients.</p>
     </div>
-    <div class="results-grid">
-      <div class="result-card featured reveal">
-        <div class="result-num">+<em>30</em> à +<em>80</em>%</div>
-        <h3>d'avis Google supplémentaires</h3>
-        <p>En facilitant le geste au bon moment, les clients satisfaits laissent enfin leurs avis. Régulièrement, sans relance de votre part.</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 48px;">
+      
+      <!-- Carte 1 : +30 à +80% (mise en avant) -->
+      <div style="grid-column: 1 / 2; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold-dark); opacity: 0.3;"></div>
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 38px; font-weight: 700; color: var(--gold-dark); letter-spacing: -0.02em; line-height: 1; margin-bottom: 12px;">
+          +<span style="color: var(--gold-dark);">30</span> à +<span style="color: var(--gold-dark);">80</span>%
+        </div>
+        <h3 style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">Davantage d'avis Google</h3>
+        <p style="font-size: 14px; color: var(--gray); line-height: 1.6; margin: 0;">Les clients satisfaits laissent plus facilement un avis lorsqu'ils sont guidés au bon moment.</p>
       </div>
-      <div class="result-card reveal">
-        <div class="result-num" style="font-size:36px; line-height:1.2;">Avis<br><em>filtrés</em></div>
-        <h3>Moins d'avis négatifs publics</h3>
-        <p>Les retours insatisfaits sont captés en privé avant d'atteindre Google. Vous intervenez directement, avant que le problème ne devienne visible.</p>
+      
+      <!-- Carte 2 : Retours privés -->
+      <div style="grid-column: 2 / 3; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); opacity: 0.15;"></div>
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: var(--blue); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 12px;">
+          Retours<br><span style="color: var(--blue);">privés</span>
+        </div>
+        <h3 style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">Détectez les problèmes plus tôt</h3>
+        <p style="font-size: 14px; color: var(--gray); line-height: 1.6; margin: 0;">Recevez les insatisfactions directement dans votre espace client avant qu'elles n'apparaissent publiquement.</p>
       </div>
-      <div class="result-card reveal">
-        <div class="result-num" style="font-size:36px; line-height:1.2;">Mieux<br><em>classé</em></div>
-        <h3>Plus de visibilité sur Google Maps</h3>
-        <p>Les fiches avec des avis récents et une note élevée remontent dans les résultats locaux. Vos clients potentiels vous trouvent avant vos concurrents.</p>
+      
+      <!-- Carte 3 : Réputation renforcée -->
+      <div style="grid-column: 1 / 2; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); opacity: 0.15;"></div>
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: var(--blue); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 12px;">
+          Réputation<br><span style="color: var(--blue);">renforcée</span>
+        </div>
+        <h3 style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">Inspirez davantage confiance</h3>
+        <p style="font-size: 14px; color: var(--gray); line-height: 1.6; margin: 0;">Une fiche Google active et bien notée rassure les futurs clients avant même le premier contact.</p>
       </div>
-      <div class="result-card reveal">
-        <div class="result-num" style="font-size:36px; line-height:1.2;">Plus de<br><em>clients</em></div>
-        <h3>Davantage de demandes locales</h3>
-        <p>Une meilleure note et plus d'avis récents génèrent directement plus d'appels, de visites et de demandes depuis Google Maps.</p>
+      
+      <!-- Carte 4 : Visibilité locale -->
+      <div style="grid-column: 2 / 3; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); opacity: 0.15;"></div>
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: var(--blue); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 12px;">
+          Visibilité<br><span style="color: var(--blue);">locale</span>
+        </div>
+        <h3 style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">Soyez trouvé plus facilement</h3>
+        <p style="font-size: 14px; color: var(--gray); line-height: 1.6; margin: 0;">Des avis récents et réguliers renforcent votre présence dans les recherches locales.</p>
       </div>
+      
     </div>
   </div>
 </section>
