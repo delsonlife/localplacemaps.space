@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LocalPlaceMaps — Transformez chaque client satisfait en avis Google</title>
+<meta name="description" content="Augmentez votre réputation locale et récupérez les retours négatifs avant qu'ils ne deviennent publics." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --white: #ffffff;
+  --ink: #0b1426;
+  --ink-soft: #16213d;
+  --gray: #5b6472;
+  --gray-light: #8891a0;
+  --surface: #f7f9fc;
+  --surface-alt: #eef2f8;
+  --border: #e3e8f0;
+  --blue: #1656d9;
+  --blue-deep: #103fa0;
+  --blue-mist: #eaf0fd;
+  --gold: #f5b400;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 1px 2px rgba(11,20,38,0.04), 0 1px 1px rgba(11,20,38,0.03);
+  --shadow-md: 0 8px 24px rgba(11,20,38,0.08);
+  --shadow-lg: 0 24px 64px rgba(11,20,38,0.12);
+  --max: 1120px;
+  --font-display: "Plus Jakarta Sans", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-display);
+  color: var(--ink);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img, svg { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 640px) {
+  .wrap { padding: 0 20px; }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+  display: inline-block;
+}
+
+h1, h2, h3 { font-family: var(--font-display); color: var(--ink); letter-spacing: -0.02em; }
+
+h2 {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+@media (max-width: 640px) {
+  h2 { font-size: 28px; }
+}
+
+.section-head {
+  max-width: 640px;
+  margin-bottom: 56px;
+}
+
+.section-head p {
+  margin-top: 16px;
+  font-size: 17px;
+  color: var(--gray);
+}
+
+section { padding: 100px 0; }
+
+@media (max-width: 640px) {
+  section { padding: 64px 0; }
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 6px 16px rgba(22,86,217,0.28);
+}
+
+.btn-primary:hover {
+  background: var(--blue-deep);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 10px 24px rgba(22,86,217,0.34);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--gray-light);
+  background: var(--surface);
+}
+
+.btn-block { width: 100%; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+header.scrolled {
+  border-bottom-color: var(--border);
+  box-shadow: 0 1px 0 rgba(11,20,38,0.02);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.logo span { color: var(--blue); }
+
+nav.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+nav.main-nav a {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--gray);
+  transition: color 0.15s ease;
+}
+
+nav.main-nav a:hover { color: var(--ink); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.nav-toggle svg { width: 22px; height: 22px; }
+
+@media (max-width: 860px) {
+  nav.main-nav.desktop { display: none; }
+  .nav-toggle { display: block; }
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 72px 0 0 0;
+  background: var(--white);
+  z-index: 99;
+  padding: 24px;
+}
+
+.mobile-menu.open { display: block; }
+
+.mobile-menu a {
+  display: block;
+  padding: 16px 4px;
+  font-size: 17px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.mobile-menu .btn { margin-top: 24px; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding-top: 168px;
+  padding-bottom: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(22,86,217,0.07), transparent 70%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 64px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+}
+
+.hero-copy h1 {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.08;
+  margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+  .hero-copy h1 { font-size: 34px; }
+}
+
+.hero-copy p.sub {
+  margin-top: 22px;
+  font-size: 18px;
+  color: var(--gray);
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  margin-top: 36px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-trust {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-trust .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
+
+.hero-trust p { font-size: 13.5px; color: var(--gray-light); }
+
+/* ---- Phone mockup (signature element) ---- */
+.phone-stage {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.phone {
+  width: 290px;
+  height: 580px;
+  background: var(--ink);
+  border-radius: 44px;
+  padding: 14px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.phone::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 22px;
+  background: var(--ink);
+  border-radius: 0 0 16px 16px;
+  z-index: 5;
+}
+
+.phone-screen {
+  background: var(--white);
+  width: 100%;
+  height: 100%;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-card {
+  width: 100%;
+  padding: 0 28px;
+  text-align: center;
+}
+
+.phone-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+
+.phone-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.phone-stars svg {
+  width: 30px;
+  height: 30px;
+  color: var(--border);
+  transition: color 0.35s ease, transform 0.25s ease;
+}
+
+.phone-stars svg.lit { color: var(--gold); transform: scale(1.06); }
+
+.phone-state {
+  margin-top: 26px;
+  font-size: 13px;
+  color: var(--gray-light);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.phone-state.show { opacity: 1; }
+
+.phone-state.success { color: var(--blue); font-weight: 600; }
+
+.phone-feedback {
+  margin-top: 22px;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.phone-feedback.show { opacity: 1; transform: translateY(0); }
+
+.phone-feedback .box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 12.5px;
+  color: var(--gray-light);
+  background: var(--surface);
+}
+
+.phone-badge {
+  position: absolute;
+  bottom: 30px;
+  right: -18px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-md);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.phone-badge .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #1ec97a;
+}
+
+@media (max-width: 900px) {
+  .phone { width: 240px; height: 480px; }
+  .phone-badge { display: none; }
+}
+
+/* ============================================================
+   PROBLEM SECTION
+   ============================================================ */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 860px) {
+  .problem-grid { grid-template-columns: 1fr; }
+}
+
+.problem-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 32px 28px;
+  background: var(--white);
+}
+
+.problem-card .icon {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px;
+  color: var(--blue);
+}
+
+.problem-card .icon svg { width: 21px; height: 21px; }
+
+.problem-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+
+.problem-card p { font-size: 14.5px; color: var(--gray); line-height: 1.6; }
+
+/* ============================================================
+   HOW IT WORKS (timeline)
+   ============================================================ */
+.how-section { background: var(--surface); }
+
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .timeline { grid-template-columns: 1fr; gap: 28px; }
+}
+
+.timeline-line {
+  position: absolute;
+  top: 23px;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+@media (max-width: 900px) { .timeline-line { display: none; } }
+
+.t-step { position: relative; padding-right: 24px; }
+
+.t-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--blue);
+  background: var(--white);
+  border: 1px solid var(--border);
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.t-step h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+
+.t-step p { font-size: 14px; color: var(--gray); line-height: 1.55; }
+
+.t-branch {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.t-branch .b {
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 11px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+}
+
+.t-branch .b.up { background: var(--blue-mist); color: var(--blue-deep); }
+.t-branch .b.down { background: #fff4e0; color: #8a5800; }
+
+/* ============================================================
+   DEMO SECTION
+   ============================================================ */
+.demo-section {
+  text-align: center;
+}
+
+.demo-card {
+  margin-top: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 56px 40px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--white) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.demo-link {
+  margin-top: 28px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--gray);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 20px;
+}
+
+.demo-link strong { color: var(--ink); font-weight: 500; }
+
+/* ============================================================
+   BENEFITS
+   ============================================================ */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+@media (max-width: 980px) { .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .benefits-grid { grid-template-columns: 1fr; } }
+
+.benefit-card {
+  padding: 28px 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.benefit-card .icon {
+  width: 38px; height: 38px;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+
+.benefit-card .icon svg { width: 100%; height: 100%; }
+
+.benefit-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+
+.benefit-card p { font-size: 13.5px; color: var(--gray); line-height: 1.55; }
+
+/* ============================================================
+   METIERS
+   ============================================================ */
+.metiers-section { background: var(--surface); }
+
+.metiers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 860px) { .metiers-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.metier-pill {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 22px;
+  font-size: 14.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.metier-pill:hover { border-color: var(--blue); transform: translateY(-2px); }
+
+.metier-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing-card {
+  max-width: 480px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+@media (max-width: 560px) { .pricing-card { padding: 36px 24px; } }
+
+.pricing-card .label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray);
+}
+
+.pricing-card .price {
+  margin-top: 14px;
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.pricing-card .price span { font-size: 18px; font-weight: 500; color: var(--gray-light); }
+
+.pricing-list {
+  margin-top: 32px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pricing-list li {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+
+.pricing-list svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+
+.pricing-note {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--gray-light);
+}
+
+.pricing-card .btn { margin-top: 28px; }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-item:first-child { border-top: 1px solid var(--border); }
+
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  gap: 16px;
+}
+
+.faq-q svg {
+  width: 18px; height: 18px;
+  color: var(--gray-light);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.faq-item.open .faq-q svg { transform: rotate(45deg); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.faq-a-inner {
+  padding-bottom: 24px;
+  font-size: 14.5px;
+  color: var(--gray);
+  line-height: 1.65;
+  max-width: 680px;
+}
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+.final-cta {
+  background: var(--ink);
+  border-radius: var(--radius-lg);
+  padding: 80px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(22,86,217,0.35), transparent 55%);
+}
+
+@media (max-width: 640px) { .final-cta { padding: 56px 28px; } }
+
+.final-cta h2 { color: var(--white); position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+
+.final-cta p { color: rgba(255,255,255,0.6); margin-top: 16px; font-size: 16px; position: relative; z-index: 1; }
+
+.final-cta .btn { margin-top: 32px; position: relative; z-index: 1; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer { padding: 56px 0 40px; }
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+
+.footer-links a { font-size: 13.5px; color: var(--gray); transition: color 0.15s ease; }
+
+.footer-links a:hover { color: var(--ink); }
+
+.footer-copy { font-size: 13px; color: var(--gray-light); }
+
+/* ============================================================
+   MODAL (contact form)
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11,20,38,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  max-width: 460px;
+  width: 100%;
+  padding: 40px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 560px) { .modal { padding: 28px 24px; } }
+
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: var(--surface);
+  border: none;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--gray);
+}
+
+.modal h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+
+.modal p.modal-sub { font-size: 14px; color: var(--gray); margin-bottom: 28px; }
+
+.field { margin-bottom: 18px; }
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 7px;
+}
+
+.field input, .field select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14.5px;
+  font-family: var(--font-display);
+  color: var(--ink);
+  background: var(--white);
+  transition: border-color 0.15s ease;
+}
+
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.form-success {
+  text-align: center;
+  padding: 20px 0;
+  display: none;
+}
+
+.form-success.show { display: block; }
+
+.form-success .check {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--blue-mist);
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.form-success h3 { margin-bottom: 8px; }
+
+.form-success p { font-size: 14.5px; color: var(--gray); }
+
+/* ============================================================
+   REVEAL ANIMATIONS
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="wrap header-inner">
+    <a href="#top" class="logo">LocalPlace<span>Maps</span></a>
+    <nav class="main-nav desktop">
+      <a href="#fonctionnement">Fonctionnement</a>
+      <a href="#demo">Démo</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="btn btn-primary" style="display:none" id="header-cta-desktop" onclick="openModal()">Demander une installation</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#fonctionnement" onclick="closeMobileMenu()">Fonctionnement</a>
+  <a href="#demo" onclick="closeMobileMenu()">Démo</a>
+  <a href="#tarifs" onclick="closeMobileMenu()">Tarifs</a>
+  <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+  <button class="btn btn-primary btn-block" onclick="closeMobileMenu(); openModal();">Demander une installation</button>
+</div>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Pour artisans et entreprises locales</span>
+        <h1>Transformez chaque client satisfait en avis Google.</h1>
+        <p class="sub">Augmentez votre réputation locale et récupérez les retours négatifs avant qu'ils ne deviennent publics.</p>
+        <div class="hero-actions">
+          <a href="#demo" class="btn btn-ghost">Voir la démo</a>
+          <button class="btn btn-primary" onclick="openModal()">Demander une installation</button>
+        </div>
+        <div class="hero-trust">
+          <span class="stars">★★★★★</span>
+          <p>Conçu pour transformer une bonne prestation en avis visible</p>
+        </div>
+      </div>
+
+      <div class="phone-stage">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-card">
+              <p class="phone-label">Votre avis compte</p>
+              <div class="phone-stars" id="phone-stars"></div>
+              <p class="phone-state" id="phone-state-redirect">Redirection vers Google Avis…</p>
+              <div class="phone-feedback" id="phone-feedback">
+                <div class="box">Partagez votre expérience concernant ce lieu…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-badge"><span class="dot"></span> Avis enregistré</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROBLEM ================= -->
+  <section id="probleme">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Le constat</span>
+        <h2 style="margin-top:16px;">Chaque jour, des avis clients vous échappent.</h2>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h3>Les clients satisfaits oublient</h3>
+          <p>Même après une excellente prestation, laisser un avis demande un effort qu'ils ne font presque jamais spontanément.</p>
+        </div>
+        <div class="problem-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.7 17.1A2 2 0 0 0 4.4 20h15.2a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
+          <h3>Les avis négatifs arrivent directement sur Google</h3>
+          <p>Sans aucune possibilité d'intervenir avant la publication, un mécontentement isolé devient visible de tous.</p>
+        </div>
+        <div class="problem-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+          <h3>Vous manquez de visibilité</h3>
+          <p>Sans retour structuré, vous ne savez pas réellement ce que vos clients pensent de chaque prestation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FONCTIONNEMENT ================= -->
+  <section id="fonctionnement" class="how-section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Le parcours</span>
+        <h2 style="margin-top:16px;">Un système simple, pensé pour être utilisé en quelques secondes.</h2>
+        <p>Le client scanne un QR Code, note son expérience, et le système se charge du reste automatiquement.</p>
+      </div>
+
+      <div class="timeline reveal">
+        <div class="timeline-line"></div>
+
+        <div class="t-step">
+          <div class="t-num">01</div>
+          <h3>QR Code</h3>
+          <p>Affiché en boutique, sur une facture ou un véhicule, il mène vers votre page d'avis personnalisée.</p>
+        </div>
+
+        <div class="t-step">
+          <div class="t-num">02</div>
+          <h3>Le client note son expérience</h3>
+          <p>Une page épurée, sans inscription, où il sélectionne simplement une note de 1 à 5 étoiles.</p>
+        </div>
+
+        <div class="t-step">
+          <div class="t-num">03</div>
+          <h3>4-5 étoiles</h3>
+          <p>Redirection immédiate vers votre fiche Google pour publier l'avis en un instant.</p>
+          <div class="t-branch"><span class="b up">→ Avis Google public</span></div>
+        </div>
+
+        <div class="t-step">
+          <div class="t-num">04</div>
+          <h3>1-3 étoiles</h3>
+          <p>Un formulaire privé s'affiche à la place, sans jamais atteindre Google.</p>
+          <div class="t-branch"><span class="b down">→ Retour privé par email</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DEMO ================= -->
+  <section id="demo" class="demo-section">
+    <div class="wrap">
+      <span class="eyebrow">À tester maintenant</span>
+      <h2 style="margin-top:16px;">Essayez le parcours en conditions réelles.</h2>
+      <p style="margin-top:16px; color:var(--gray); font-size:16px; max-width:520px; margin-left:auto; margin-right:auto;">Vous comprendrez le système en moins de 30 secondes, exactement comme le verraient vos propres clients.</p>
+
+      <div class="demo-card reveal">
+        <a href="https://avis.localplacemaps.space/r/ABC123" target="_blank" rel="noopener" class="btn btn-primary">Tester la démo</a>
+        <div class="demo-link">avis.localplacemaps.space<strong>/r/ABC123</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BENEFITS ================= -->
+  <section id="benefices">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Les bénéfices</span>
+        <h2 style="margin-top:16px;">Ce que ce système change concrètement.</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 7 7 .6-5.3 4.6L18.5 21 12 17l-6.5 4 1.8-6.8L2 9.6 9 9z"/></svg></div>
+          <h3>Plus d'avis Google</h3>
+          <p>Développez votre visibilité locale avec un flux régulier d'avis authentiques.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.35-9.3-8.8C1.1 8.4 3 5 6.5 5c2 0 3.4 1.1 4 2.2C11.1 6.1 12.5 5 14.5 5 18 5 19.9 8.4 21.3 12.2 19 16.65 12 21 12 21z"/></svg></div>
+          <h3>Plus de confiance</h3>
+          <p>Rassurez vos futurs clients grâce à des avis nombreux et récents sur votre fiche.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg></div>
+          <h3>Détection rapide des problèmes</h3>
+          <p>Intervenez directement auprès du client avant qu'un avis négatif ne soit publié.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+          <h3>Installation rapide</h3>
+          <p>Mise en place simple et accompagnée, opérationnelle en quelques jours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= METIERS ================= -->
+  <section id="metiers" class="metiers-section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Pour qui ?</span>
+        <h2 style="margin-top:16px;">Conçu pour les entreprises de proximité.</h2>
+      </div>
+      <div class="metiers-grid reveal">
+        <div class="metier-pill"><span class="dot"></span>Couvreurs</div>
+        <div class="metier-pill"><span class="dot"></span>Plombiers</div>
+        <div class="metier-pill"><span class="dot"></span>Électriciens</div>
+        <div class="metier-pill"><span class="dot"></span>Garages</div>
+        <div class="metier-pill"><span class="dot"></span>Restaurants</div>
+        <div class="metier-pill"><span class="dot"></span>Paysagistes</div>
+        <div class="metier-pill"><span class="dot"></span>Agences immobilières</div>
+        <div class="metier-pill"><span class="dot"></span>Instituts de beauté</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRICING ================= -->
+  <section id="tarifs">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-left:auto; margin-right:auto; text-align:center;">
+        <span class="eyebrow">Tarif</span>
+        <h2 style="margin-top:16px;">Une offre simple, sans surprise.</h2>
+      </div>
+
+      <div class="pricing-card reveal">
+        <p class="label">Installation complète</p>
+        <p class="price">149 €<span> paiement unique</span></p>
+
+        <ul class="pricing-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Création de votre lien d'avis personnalisé</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> QR Code personnalisé</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Connexion à votre fiche Google</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Réception des retours négatifs par email</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Hébergement inclus</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Installation complète et accompagnée</li>
+        </ul>
+
+        <button class="btn btn-primary btn-block" onclick="openModal()">Demander une installation</button>
+        <p class="pricing-note">Aucun abonnement pendant notre phase de lancement.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section id="faq">
+    <div class="wrap" style="max-width:760px;">
+      <div class="section-head reveal">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2 style="margin-top:16px;">Tout ce qu'il faut savoir.</h2>
+      </div>
+
+      <div class="reveal">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Comment fonctionne le QR Code ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">Le QR Code mène directement à votre page d'avis personnalisée. Le client n'a rien à installer ni à créer de compte : il scanne, note son expérience, et le parcours se déclenche automatiquement.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Les avis sont-ils publiés automatiquement sur Google ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">Seuls les clients qui attribuent 4 ou 5 étoiles sont redirigés vers votre fiche Google pour y publier leur avis. Les notes de 1 à 3 étoiles restent privées et ne sont jamais publiées.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Comment suis-je averti des retours négatifs ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">Vous recevez un email immédiat à chaque retour de 1 à 3 étoiles, contenant la note et le commentaire laissé par le client, pour pouvoir réagir rapidement.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">L'installation est-elle compliquée ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">Non. Vous nous transmettez le lien de votre fiche Google et votre email de contact, et nous configurons l'ensemble du système pour vous, QR Code inclus.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Y a-t-il un abonnement ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">Pendant notre phase de lancement, l'installation à 149 € est un paiement unique, sans abonnement mensuel.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Est-ce compatible avec mon activité ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">Le système s'adapte à toute entreprise disposant d'une fiche Google : artisans, commerces, restaurants, professions de santé ou de beauté, agences, et plus encore.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section>
+    <div class="wrap">
+      <div class="final-cta reveal">
+        <h2>Commencez à développer votre réputation locale dès aujourd'hui.</h2>
+        <p>Installation rapide, sans abonnement pendant le lancement.</p>
+        <button class="btn btn-primary" onclick="openModal()">Demander une installation</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span class="logo">LocalPlace<span>Maps</span></span>
+    <div class="footer-links">
+      <a href="#" onclick="openModal(); return false;">Contact</a>
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+    <span class="footer-copy">© 2026 LocalPlaceMaps</span>
+  </div>
+</footer>
+
+<!-- ================= CONTACT MODAL ================= -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div id="modal-form-wrap">
+      <h3>Demander une installation</h3>
+      <p class="modal-sub">Renseignez vos informations, nous vous recontactons rapidement pour mettre en place votre système d'avis.</p>
+
+      <form id="contact-form" onsubmit="submitForm(event)">
+        <div class="field">
+          <label for="f-name">Nom complet</label>
+          <input type="text" id="f-name" name="name" required placeholder="Jean Dupont" />
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input type="email" id="f-email" name="email" required placeholder="jean@entreprise.fr" />
+        </div>
+        <div class="field">
+          <label for="f-phone">Téléphone</label>
+          <input type="tel" id="f-phone" name="phone" required placeholder="06 12 34 56 78" />
+        </div>
+        <div class="field">
+          <label for="f-job">Métier</label>
+          <select id="f-job" name="job" required>
+            <option value="" disabled selected>Sélectionnez votre activité</option>
+            <option>Couvreur</option>
+            <option>Plombier</option>
+            <option>Électricien</option>
+            <option>Garage</option>
+            <option>Restaurant</option>
+            <option>Paysagiste</option>
+            <option>Agence immobilière</option>
+            <option>Institut de beauté</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Envoyer ma demande</button>
+      </form>
+    </div>
+
+    <div class="form-success" id="form-success">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h3>Demande envoyée</h3>
+      <p>Nous vous recontactons très rapidement pour mettre en place votre système d'avis.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------- Header scroll state ----------
+const header = document.getElementById('site-header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 8);
+});
+
+// ---------- Mobile menu ----------
+const navToggle = document.getElementById('nav-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+navToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+function closeMobileMenu() { mobileMenu.classList.remove('open'); }
+
+// ---------- Modal ----------
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('modal-form-wrap').style.display = 'none';
+  document.getElementById('form-success').classList.add('show');
+  setTimeout(() => {
+    closeModal();
+    document.getElementById('modal-form-wrap').style.display = 'block';
+    document.getElementById('form-success').classList.remove('show');
+    document.getElementById('contact-form').reset();
+  }, 2600);
+}
+
+// ---------- FAQ accordion ----------
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-a');
+  const wasOpen = item.classList.contains('open');
+
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-a').style.maxHeight = null;
+  });
+
+  if (!wasOpen) {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+
+// ---------- Reveal on scroll ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => io.observe(el));
+
+// ---------- Phone mockup animation (signature element) ----------
+const starSvg = (filled) => `<svg viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" class="${filled ? 'lit' : ''}"><path stroke-linejoin="round" d="M12 3.5l2.45 4.97 5.48.8-3.97 3.87.94 5.46L12 16.1l-4.9 2.5.94-5.46L2.07 9.27l5.48-.8L12 3.5z"/></svg>`;
+
+const phoneStarsEl = document.getElementById('phone-stars');
+const stateRedirect = document.getElementById('phone-state-redirect');
+const feedbackEl = document.getElementById('phone-feedback');
+
+function renderStars(count) {
+  phoneStarsEl.innerHTML = [1,2,3,4,5].map(i => starSvg(i <= count)).join('');
+}
+
+let frame = 0;
+const sequence = [
+  { stars: 0, hold: 600 },
+  { stars: 1, hold: 160 },
+  { stars: 2, hold: 160 },
+  { stars: 3, hold: 160 },
+  { stars: 4, hold: 160 },
+  { stars: 5, hold: 900, showRedirect: true },
+  { stars: 5, hold: 1400, showRedirect: true },
+  { stars: 0, hold: 500, reset: true },
+  { stars: 1, hold: 180 },
+  { stars: 2, hold: 1100, showFeedback: true },
+  { stars: 2, hold: 1800, showFeedback: true },
+  { stars: 0, hold: 500, reset: true },
+];
+
+function runPhoneSequence() {
+  const step = sequence[frame];
+  renderStars(step.stars);
+
+  stateRedirect.classList.toggle('show', !!step.showRedirect);
+  feedbackEl.classList.toggle('show', !!step.showFeedback);
+
+  frame = (frame + 1) % sequence.length;
+  setTimeout(runPhoneSequence, step.hold);
+}
+
+renderStars(0);
+setTimeout(runPhoneSequence, 700);
+</script>
+
+</body>
+</html>
