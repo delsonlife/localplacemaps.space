@@ -1396,16 +1396,29 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
     </div>
 
     <div style="max-width: 520px; margin: 52px auto 0;">
-      <!-- Carte principale - Installation -->
-      <div class="pricing-card main reveal" style="position: relative; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(26,86,232,0.06), var(--shadow-md);">
+      <!-- Carte unique - Installation + Maintenance -->
+      <div class="pricing-card main reveal" style="position: relative; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(26,86,232,0.06), var(--shadow-md); border-radius: var(--radius-xl); padding: 40px 36px; background: var(--white);">
+        
         <div class="tag" style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--blue); color: var(--white); font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; white-space: nowrap;">Installation</div>
         
         <div style="text-align: center; padding-top: 12px;">
           <p style="font-size: 14px; font-weight: 600; color: var(--gray); margin-bottom: 10px;">Configuration complète</p>
+          
+          <!-- PRIX PRINCIPAL -->
           <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); line-height: 1;">
             <sup style="font-size: 22px; font-weight: 600; vertical-align: super; letter-spacing: 0;">€</sup>99
           </div>
           <p style="font-size: 14px; color: var(--gray-light); margin-top: 6px; font-weight: 500;">Paiement unique</p>
+          
+          <!-- ⬇️ MAINTENANCE : ligne discrète sous le prix ⬇️ -->
+          <div style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; background: var(--surface-alt); padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border-light);">
+            <span style="font-size: 13px; font-weight: 500; color: var(--gray-light);">+</span>
+            <span style="font-size: 15px; font-weight: 700; color: var(--blue);">49€/an</span>
+            <span style="font-size: 13px; color: var(--gray-light);">seulement à partir de la 2ᵉ année</span>
+          </div>
+          <!-- ⬆️ FIN MAINTENANCE ⬆️ -->
+          
+          <p style="font-size: 12.5px; color: var(--gray-light); margin-top: 8px; font-style: italic;">Maintenance & fonctionnement inclus la 1ʳᵉ année</p>
         </div>
 
         <p style="font-size: 14px; color: var(--gray); margin-top: 16px; line-height: 1.55; text-align: center;">Nous installons l'ensemble du système pour vous. Aucune compétence technique requise.</p>
@@ -1440,17 +1453,6 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
         <button class="btn btn-primary btn-block" onclick="openModal()" style="margin-top: 28px; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); font-weight: 600; font-size: 15px; padding: 14px 26px; border-radius: 999px; border: 1.5px solid transparent; cursor: pointer; transition: all 0.18s ease; white-space: nowrap; line-height: 1; background: var(--blue); color: var(--white); border-color: var(--blue); box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset, 0 4px 14px rgba(26,86,232,0.3);">
           Demander une installation
         </button>
-      </div>
-
-      <!-- NOTE SECONDAIRE : Maintenance (encart discret) -->
-      <div style="margin-top: 20px; text-align: center; padding: 16px 20px; background: var(--surface-alt); border-radius: var(--radius-md); border: 1px solid var(--border-light);">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 14px; font-weight: 600; color: var(--ink-soft);">🔧 Maintenance :</span>
-          <span style="font-size: 14px; font-weight: 700; color: var(--blue);">49€/an</span>
-          <span style="font-size: 13px; color: var(--gray-light);">à partir de la 2ᵉ année</span>
-          <span style="display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--gray-ultra);"></span>
-          <span style="font-size: 13px; color: var(--gray);">Assure le bon fonctionnement du système</span>
-        </div>
       </div>
 
       <!-- Assurance finale -->
